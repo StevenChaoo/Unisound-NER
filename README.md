@@ -1,5 +1,13 @@
 # Unisound Chinese Medical Named Entity Recognition
 
+> **Author: [StevenChaoo](https://github.com/StevenChaoo)**
+
+![vscode](https://img.shields.io/badge/visual_studio_code-007acc?style=flat-square&logo=visual-studio-code&logoColor=ffffff)![neovim](https://img.shields.io/badge/Neovim-57a143?style=flat-square&logo=Neovim&logoColor=ffffff)![git](https://img.shields.io/badge/Git-f05032?style=flat-square&logo=git&logoColor=ffffff)![python](https://img.shields.io/badge/Python-3776ab?style=flat-square&logo=Python&logoColor=ffffff)
+
+This blog is written by **Neovim** and **Visual Studio Code**. You may need to clone this repository to your local and use **Visual Studio Code** to read. ***Markdown Preview Enhanced*** plugin is necessary as well. Codes are all writen with **Python**.
+
+Source code of Unisound-NER project. Some important information has been ignored.
+
 ## Quick links
 
 - [Results](#results)
@@ -40,28 +48,44 @@ pip install -r requirements.txt
 Please put `train.txt` and `test.txt` in `/data/` with formatting as followed:
 
 ```txt
-预 B-PURPOSE
-防 E-PURPOSE
-和 O
-治 B-PURPOSE
-疗 E-PURPOSE
-癌 B-CONDITAION
-症 I-CONDITAION
-化 I-CONDITAION
-疗 E-CONDITAION
-引 O
-起 O
+Chinese-token B-label
+Chinese-token E-label
+Chinese-token O
+Chinese-token B-label
+Chinese-token E-label
+Chinese-token B-label
+Chinese-token I-label
+Chinese-token I-label
+Chinese-token E-label
+Chinese-token O
+Chinese-token O
 ...
 ```
 
 ## Quick Start
 
-The following commands can be used to run our pre-trained model on `/data/`. You can also fine tune our pre-trained model with extra dataset with `--mode=finetune`:
+The following commands can be used to run our pre-trained model on `/data/`.
 
 ```bash
+# Download pre-trained model RoBERTa from Google Drive: https://drive.google.com/file/d/1IRUAbf-ML2mekK6Ysmyav78u_Y03wMnh/view?usp=sharing
+unzip roberta.zip
+mv roberta model
 python core/bert.py \
     --save \
     --mode=train \
+    --pretrained_bert_path=model/roberta_wwm_ext_large \
+    --saved_path=model \
+    --model_path=model \
+    --trainset_path="['./data/raw/train.txt']" \
+    --testset_path=./data/raw/test.txt \
+    --cuda=0 \
+    --batch_size=2
+
+# Or download our pre-trained model from Google Drive to fine-tune with extra dataset:https://drive.google.com/file/d/1HAO4cqc0lYR7e54GUM2uebWXYXj5hsS6/view?usp=sharing
+unzip model.zip
+python core/bert.py \
+    --save \
+    --mode=finetune \
     --pretrained_bert_path=model/roberta_wwm_ext_large \
     --saved_path=model \
     --model_path=model \
